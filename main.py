@@ -10,8 +10,10 @@ from strategies.ic_nope import ICNope
 
 def main():
     ticker = "GOOG"
-    print(f"Loading {ticker} data from 2019-01-01 to 2020-03-05")
-    ohlcv, opt_chain = fetch_data(ticker, "2019-01-01", "2020-03-05")
+    period = ("2019-01-01",  "2020-03-05")
+
+    print(f"Loading {ticker} data from {period[0]} to {period[1]}")
+    ohlcv, opt_chain = fetch_data(ticker, period[0], period[1])
     ohlcv.insert(len(ohlcv.columns), 'Daily Ret', calc_daily_ret(ohlcv['Adj Close']))
     ohlcv.insert(len(ohlcv.columns), 'Liquidity', calc_liquidity(ohlcv['Daily Ret'], ohlcv['Volume']))
 
