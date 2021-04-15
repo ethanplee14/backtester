@@ -68,6 +68,18 @@ class TestMaxDrawdownDuration(unittest.TestCase):
         cum_ret = [100, 101, 100, 99, 98, 99, 100, 98]
         self.assertEqual((1, len(cum_ret)-1), max_drawdown_dur(cum_ret))
 
+    def test_mid_longest_drawdown(self):
+        cum_ret = [
+            20.59, 20.39, 20, 18, 19.39,
+            21, 21.35, 22.19, 23.28,
+            24.49, 23.99, 23, 24, 24.2, 21.24, 20.81, 19.18, 24.5,
+            27.5, 28, 30, 29.87, 28.40, 30
+        ]
+        self.assertEqual((9, 16), max_drawdown_dur(cum_ret))
+
     def test_no_drawdowns(self):
         cum_ret = [50, 51, 52, 53, 54, 55]
         self.assertEqual((0, 0), max_drawdown_dur(cum_ret))
+
+    def test_empty_cum_ret(self):
+        self.assertEqual((0, 0), max_drawdown_dur([]))
