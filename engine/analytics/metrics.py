@@ -1,14 +1,14 @@
 import numpy as np
 
 
-def prct_returns(profits, initial_bal):
+def pct_ratio(profits, initial_bal):
     curr_bal = initial_bal
     for ret in profits:
         curr_bal = curr_bal * (1 + ret)
     return (curr_bal / initial_bal) - 1
 
 
-def sharpes_ratio(pct_returns, profits, risk_free_rate):
+def sharpe_ratio(pct_returns, profits, risk_free_rate):
     return (pct_returns - risk_free_rate) / np.std(profits)
 
 

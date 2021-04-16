@@ -1,5 +1,5 @@
 from copy import copy
-from engine.analytics.metrics import prct_returns, sharpes_ratio
+from engine.analytics.metrics import pct_ratio, sharpe_ratio, max_drawdown, max_drawdown_dur
 from utils.dictionary import slice_dict
 
 
@@ -27,12 +27,16 @@ class StatsGenerator:
         returns = [res['profits'] for res in trade_results]
         total_premium = sum([res['premium'] for res in trade_results])
         max_collateral = max([res['collateral'] for res in trade_results])
-        percent_returns = prct_returns(returns, 100000)
-        sharpe = sharpes_ratio(percent_returns, returns, 0.07)
+        percent_returns = pct_ratio(returns, 100000)
+        sharpe = sharpe_ratio(percent_returns, returns, 0.07)
+        max_down = max_drawdown()
+        max_down_dur = max_drawdown_dur()
         self._stats = {
             "prem_per_coll": total_premium / max_collateral,
             "percent_returns": percent_returns,
-            "sharpe_ratio": sharpe
+            "sharpe_ratio": sharpe,
+            "max_drawdown": max_down,
+            "max_drawdown_dur": max_down_dur
         }
         return self.results()
 
