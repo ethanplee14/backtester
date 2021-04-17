@@ -10,11 +10,10 @@ from engine.utils.selectors import select_option_expire
 
 class ICNope:
 
-    opt_impact_avoidance = .1
-    _daily_option_impact = []
-
     def __init__(self, opt_impact_sensitivity=1):
         self.opt_sensitivity = opt_impact_sensitivity
+        self.opt_impact_avoidance = .1
+        self._daily_option_impact = []
 
     def run(self, _, daily_stock_data, daily_option_data, eow):
         """

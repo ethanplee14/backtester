@@ -4,8 +4,9 @@ from datetime import datetime
 
 class DailyStrategyLauncher:
 
-    _daily_strats = []
-    _trades = {}
+    def __init__(self):
+        self._daily_strats = []
+        self._trades = {}
 
     def add_strat(self, strat):
         self._daily_strats.append(strat)

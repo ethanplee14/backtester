@@ -1,7 +1,8 @@
 
 class Trade:
 
-    trades = []
+    def __init__(self):
+        self.trades = []
 
     def buy_option(self, right, expire_date, option):
         self.trades.append({

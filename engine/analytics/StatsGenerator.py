@@ -5,10 +5,9 @@ from utils.dictionary import slice_dict
 
 class StatsGenerator:
 
-    _stats = {}
-
     def __init__(self, trade_results=None):
         self.gen_stats(trade_results)
+        self._stats = {}
 
     def results(self, *stat_fields):
         """

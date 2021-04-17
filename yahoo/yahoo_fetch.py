@@ -4,6 +4,7 @@ from dateutil.relativedelta import relativedelta
 from io import StringIO
 import pandas as pd
 
+
 BASE_URL = "https://query1.finance.yahoo.com/v7/finance/download/"
 
 

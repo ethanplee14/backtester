@@ -6,10 +6,9 @@ from engine.utils.selectors import select_option_strike
 
 class TradeAnalyzer:
 
-    _results = []
-
     def __init__(self, opt_chains):
         self._opt_chains = opt_chains
+        self._results = []
 
     def analyze(self, trades):
         trades = copy.deepcopy(trades)
