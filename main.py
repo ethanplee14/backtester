@@ -1,40 +1,51 @@
-from pprint import pprint
-
+import json
+from datetime import datetime
 from engine.DailyStrategyLauncher import DailyStrategyLauncher
 from engine.analytics.TradeAnalyzer import TradeAnalyzer
-from engine.analytics.StatsGenerator import StatsGenerator
-from engine.fetch_data import fetch_data
-from metrics.stock import calc_daily_ret, calc_liquidity
+from engine.analytics.metrics import sharpe_ratio, max_drawdown, max_drawdown_dur
 from strategies.ic_nope import ICNope
+from strategies.simulators.StrategySimulator import StrategySimulator
+from configparser import ConfigParser
 
 
 def main():
-    ticker = "GOOG"
-    period = ("2019-01-01",  "2020-03-05")
+    config = ConfigParser()
+    config.read("config/settings.ini")
 
-    print(f"Loading {ticker} data from {period[0]} to {period[1]}")
-    ohlcv, opt_chain = fetch_data(ticker, period[0], period[1])
-    ohlcv.insert(len(ohlcv.columns), 'Daily Ret', calc_daily_ret(ohlcv['Adj Close']))
-    ohlcv.insert(len(ohlcv.columns), 'Liquidity', calc_liquidity(ohlcv['Daily Ret'], ohlcv['Volume']))
+    simulator = StrategySimulator(DailyStrategyLauncher(ICNope()), TradeAnalyzer())
+    # GE(Breaks for some reason), ROKU(Missing a trade on 02-22-2019)
+    tickers = [
+        "AMZN", "NFLX", "NVDA", "FB", "WMT", "GOOG", "DIS", "HD", "ROKU",
+        "AMD", "CRM", "TWTR", "MCD", "GM", "MPC", "SBUX", "BABA"
+    ]
+    even_dist = 1/len(tickers)
+    simulator.positions = {k: even_dist for k in tickers}
+    simulator.run("2019-01-01", "2020-01-01")
+    results = simulator.results()
 
-    for (daily_stock, daily_opt_data) in zip(ohlcv.iterrows(), opt_chain):
-        if daily_stock[0] != daily_opt_data['tradeDate'].strftime('%Y-%m-%d'):
-            print("OHCLV: " + daily_stock[0])
-            print("Opt Chain: " + daily_opt_data['tradeDate'].strftime('%Y-%m-%d'))
-            break
+    print_out(config, results, simulator.trade_results)
+    print_stats(results, config, simulator.init_bal)
 
-    launcher = DailyStrategyLauncher()
-    launcher.add_strat(ICNope().run)
 
-    analyzer = TradeAnalyzer(opt_chain)
-    stats_gen = StatsGenerator()
+def print_out(config, results, trade_results):
+    timestamp = int(datetime.now().timestamp() * 1000)
+    out_dir = config['Paths']['out_dir'] + "/"
+    results.to_csv(out_dir + f"results_{timestamp}.csv")
 
-    trades = launcher.start(ohlcv, opt_chain)
-    trade_results = analyzer.analyze(trades['icnope'])
-    stats = stats_gen.gen_stats(trade_results)
+    with open(out_dir + f"trades_{timestamp}.json", "w") as f:
+        json.dump(trade_results, f, indent=2, default=str)
 
-    print(stats)
-    pprint(trade_results)
+
+def print_stats(results, config, bal_start):
+    total_pct_ret = results['MktVal'].iloc[-1] / bal_start - 1
+    risk_free_rate = float(config['Constants']['risk_free_rate'])
+    s_ratio = sharpe_ratio(total_pct_ret, results['PctReturns'], risk_free_rate)
+    max_down = max_drawdown(results['MktVal'])
+    max_down_dur = max_drawdown_dur(results['MktVal'])
+
+    print("Sharpe's Ratio: " + str(s_ratio))
+    print("Max Drawdown: " + str(max_down))
+    print("Max Drawdown Duration: " + str(max_down_dur))
 
 
 if __name__ == '__main__':

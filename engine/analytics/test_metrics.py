@@ -1,6 +1,23 @@
 import unittest
 
-from engine.analytics.metrics import max_drawdown, max_drawdown_dur
+from engine.analytics.metrics import max_drawdown, max_drawdown_dur, sharpe_ratio, annualized_sharpe_ratio
+
+
+class TestSharpeRatio(unittest.TestCase):
+
+    risk_free_rate = 0.02
+
+    def test_sharpe_ratio(self):
+        total_pct_ret = -0.6556
+        pct_rets = [
+            0.049, 0.3025, 0.2055, 0.351, -0.002, 0.327, -0.2345, -0.0425, -0.142, 0.149,
+            0.0495, -0.2025, 0.22, 0.222, -0.5265, -0.0405, -0.4365, 0.4205, 0.2425, -0.1605,
+            -0.3365, 0.0005, -0.2055, -0.267, -0.013, -0.077, -0.1265, 0.032, -0.24, 0.2245,
+            0.211, -0.061, 0.347, 0.0215, -0.01, 0.0125, 0.0705, -0.03, 0.0225, 0.1535, 0.316,
+            0.218, -0.0535, 0.1235, -0.4735, -0.0235, -0.2765, 0.179, -0.227, 0.042,
+        ]
+        ratio = sharpe_ratio(total_pct_ret, pct_rets, self.risk_free_rate)
+        self.assertEqual(-3.024648167457463, ratio)
 
 
 class TestMaxDrawdown(unittest.TestCase):

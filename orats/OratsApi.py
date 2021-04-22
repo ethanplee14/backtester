@@ -1,7 +1,7 @@
 import requests
 
 
-class OratsFetcher:
+class OratsApi:
 
     BASE_URL = "https://api.orats.io/datav2/"
 

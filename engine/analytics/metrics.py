@@ -8,8 +8,12 @@ def pct_ratio(profits, initial_bal):
     return (curr_bal / initial_bal) - 1
 
 
-def sharpe_ratio(pct_returns, profits, risk_free_rate):
-    return (pct_returns - risk_free_rate) / np.std(profits)
+def sharpe_ratio(total_pct_return, pct_returns, risk_free_rate):
+    return (total_pct_return - risk_free_rate) / np.std(pct_returns, ddof=1)
+
+
+def annualized_sharpe_ratio(units_per_yr, total_pct_ret, pct_rets, risk_free_rate):
+    return np.sqrt(units_per_yr) * sharpe_ratio(total_pct_ret, pct_rets, risk_free_rate)
 
 
 def max_drawdown(cum_returns):

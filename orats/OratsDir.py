@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 
-class OratsLoader:
+class OratsDir:
 
     _FILE_BASE = "ORATS_SMV_Strikes"
 
@@ -21,7 +21,7 @@ class OratsLoader:
         avail_years = {}
         for year in os.listdir(self.orats_dir):
             files = os.listdir(self.orats_dir + "/" + year)
-            days = list(map(OratsLoader._parse_date, files))
+            days = list(map(OratsDir._parse_date, files))
             avail_years[year] = days
         return avail_years
 

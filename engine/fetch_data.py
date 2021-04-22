@@ -1,3 +1,4 @@
+from metrics.stock import calc_daily_ret, calc_liquidity
 from yahoo import yahoo_fetch
 from pymongo import MongoClient
 from datetime import datetime
@@ -10,6 +11,9 @@ def fetch_data(ticker, start_date, end_date, settings_path="config/settings.ini"
     mongo = MongoClient(config['Mongo']['url'], int(config['Mongo']['port']))
 
     stock_data = yahoo_fetch.daily_ohclv_period(ticker, start_date, end_date)
+    stock_data.insert(len(stock_data.columns), 'Daily Ret', calc_daily_ret(stock_data['Adj Close']))
+    stock_data.insert(len(stock_data.columns), 'Liquidity', calc_liquidity(stock_data['Daily Ret'], stock_data['Volume']))
+
     option_data = fetch_mongo_opt(ticker, start_date, end_date, mongo)
 
     return stock_data, option_data

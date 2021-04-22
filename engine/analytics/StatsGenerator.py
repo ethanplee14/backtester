@@ -13,7 +13,7 @@ class StatsGenerator:
         """
         Gets statistics with field filtering
         :param stat_fields: desired statistics field [prem_per_coll, percent_returns, sharpe_ratio]
-        :return: dictionary of statistics of trade results
+        :return: dictionary of statistics of trade trade_results
         """
         if len(stat_fields) > 0:
             return slice_dict(self._stats, *stat_fields)
