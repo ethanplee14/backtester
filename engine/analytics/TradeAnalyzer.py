@@ -1,6 +1,6 @@
 import copy
 
-from engine.opt_strats.iron_condor import calc_premiums, calc_collateral
+from engine.opt_strats.iron_condor import calc_premiums, calc_collateral, trade_opt_values
 from engine.utils.selectors import select_option_strike
 
 
@@ -17,27 +17,44 @@ class TradeAnalyzer:
         curr_trade = self._next_available_trade()
 
         for opt_chain in opt_chains:
+            if curr_trade is None:
+                return self._results
+
             if opt_chain['tradeDate'] == curr_trade['ps']['expire_date']:
                 expire_str = '{dt.month}/{dt.day}/{dt.year}'.format(dt=curr_trade['pb']['expire_date'])
                 next_week_options = opt_chain['optionChain'][expire_str]['options']
                 self._results.append(_build_results(curr_trade, next_week_options))
                 curr_trade = self._next_available_trade()
 
-        if len(self._unprocessed_trades) > 0:
-            print("analyzer didn't finish all trades: " + str(len(curr_trade)))
+        if curr_trade is not None:
+            self._results.append({
+                'trade': curr_trade,
+                'premium': 0,
+                'collateral': 0,
+                'pct_ret': 0,
+                'msg': "INCOMPLETE"
+            })
         return self._results
 
     def reset(self):
         self._results = []
 
     def _next_available_trade(self):
+        if len(self._unprocessed_trades) == 0:
+            return None
+
         curr_trade = self._unprocessed_trades.pop(0)
+
         while "ps" not in curr_trade:
-            curr_trade['trade'] = {}
-            curr_trade['premium'] = 0
-            curr_trade['collateral'] = 0
-            curr_trade['pct_ret'] = 0
-            self._results.append(curr_trade)
+            self._results.append({
+                'trade': curr_trade,
+                'premium': 0,
+                'collateral': 0,
+                'pct_ret': 0
+            })
+
+            if len(self._unprocessed_trades) == 0:
+                return None
             curr_trade = self._unprocessed_trades.pop(0)
         return curr_trade
 
@@ -53,10 +70,7 @@ def _build_results(trade, next_week_options):
 
 
 def _trade_premiums(trade, options, digits=2):
-    trade_prices = {
-        'pb': trade['pb']['option']['putVal'], 'ps': trade['ps']['option']['putVal'],
-        'cs': trade['cs']['option']['callVal'], 'cb': trade['cb']['option']['callVal']
-    }
+    trade_prices = trade_opt_values(trade)
     close_prices = {
         'pb': select_option_strike(options, trade['pb']['option']['strike'])['putVal'],
         'ps': select_option_strike(options, trade['ps']['option']['strike'])['putVal'],

@@ -13,14 +13,13 @@ def main():
     config.read("config/settings.ini")
 
     simulator = StrategySimulator(DailyStrategyLauncher(ICNope()), TradeAnalyzer())
-    # GE(Breaks for some reason), ROKU(Missing a trade on 02-22-2019)
     tickers = [
         "AMZN", "NFLX", "NVDA", "FB", "WMT", "GOOG", "DIS", "HD", "ROKU",
         "AMD", "CRM", "TWTR", "MCD", "GM", "MPC", "SBUX", "BABA"
     ]
     even_dist = 1/len(tickers)
     simulator.positions = {k: even_dist for k in tickers}
-    simulator.run("2019-01-01", "2020-01-01")
+    simulator.run("2018-01-01", "2021-01-05")
     results = simulator.results()
 
     print_out(config, results, simulator.trade_results)
@@ -43,6 +42,7 @@ def print_stats(results, config, bal_start):
     max_down = max_drawdown(results['MktVal'])
     max_down_dur = max_drawdown_dur(results['MktVal'])
 
+    print("======================= RESULTS =======================")
     print("Sharpe's Ratio: " + str(s_ratio))
     print("Max Drawdown: " + str(max_down))
     print("Max Drawdown Duration: " + str(max_down_dur))

@@ -31,7 +31,6 @@ class DailyStrategyLauncher:
         self.strat.reset()
 
     def _run_strategy(self, trade_date, stock_ohlcav, daily_stock, daily_opt):
-        # TODO: Even if no trade is placed, we should return a reasoning as to why
         is_eow = end_of_week(stock_ohlcav.index, daily_stock.name)
         trade = self.strat.run(daily_stock.name, daily_stock, daily_opt, is_eow)
         if trade is not None:

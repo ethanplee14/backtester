@@ -28,22 +28,29 @@ def calc_strikes(stock_price, threshold, strikes):
     return pb, ps, cs, cb
 
 
-def calc_premiums(ic_options):
+def calc_premiums(ic_options, digits=4):
     put_premium = ic_options['ps'] - ic_options['pb']
     call_premium = ic_options['cs'] - ic_options['cb']
-    return round(put_premium + call_premium, 4) * 100
+    return round(put_premium + call_premium, digits) * 100
 
 
-def calc_collateral(ic_options):
+def calc_collateral(ic_options, digits=4):
     put_collateral = (ic_options['ps'] - ic_options['pb'])
     call_collateral = (ic_options['cb'] - ic_options['cs'])
-    return round(max(put_collateral, call_collateral), 4) * 100
+    return round(max(put_collateral, call_collateral), digits) * 100
 
 
 def has_enough_premiums(ic_options, minimums=0):
     put_prem_mins = ic_options['ps'] - ic_options['pb'] > minimums
     call_prem_mins = ic_options['cs'] - ic_options['cb'] > minimums
     return put_prem_mins and call_prem_mins
+
+
+def trade_opt_values(trade):
+    return {
+        'pb': trade['pb']['option']['putVal'], 'ps': trade['ps']['option']['putVal'],
+        'cs': trade['cs']['option']['callVal'], 'cb': trade['cb']['option']['callVal']
+    }
 
 
 def build_trade(opt_chain, ic_strikes):
