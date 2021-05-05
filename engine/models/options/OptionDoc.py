@@ -1,12 +1,13 @@
 from dateutil.relativedelta import relativedelta
 
-from engine.models.options.Option import OptionChain, Option
+from engine.models.options.Option import OptionChain
 from utils.math import nearest_number
 
 
 class OptionDoc:
 
     def __init__(self, opt_chain):
+        self._opt_chain = opt_chain
         self.ticker = opt_chain['ticker']
         self.price = opt_chain['price']
         self.trade_date = opt_chain['tradeDate']
@@ -24,5 +25,11 @@ class OptionDoc:
         nearest_expiry = nearest_number(expire_at, self.expire_dates())
         return self.chain_by_expire(nearest_expiry)
 
+    def __getitem__(self, item):
+        return self._opt_chain[item]
 
+    def __str__(self):
+        return f"<OptDoc {self.ticker} {self.trade_date.strftime('%Y-%m-%d')}>"
 
+    def __repr__(self):
+        return self.__str__()

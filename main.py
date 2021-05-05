@@ -1,28 +1,32 @@
 import json
 from datetime import datetime
 from engine.DailyStrategyLauncher import DailyStrategyLauncher
-from engine.analytics.TradeAnalyzer import TradeAnalyzer
+from engine.analytics.ICTradeAnalyzer import ICTradeAnalyzer
+from engine.analytics.OptAnalyzerRecorder import OptAnalyzerRecorder
 from engine.analytics.metrics import sharpe_ratio, max_drawdown, max_drawdown_dur
 from strategies.ic_nope import ICNope
-from strategies.simulators.StrategySimulator import StrategySimulator
+from engine.simulators.WeightedSimulator import WeightedSimulator
 from configparser import ConfigParser
+
+from yahoo import yahoo_fetch
 
 
 def main():
     config = ConfigParser()
     config.read("config/settings.ini")
 
-    simulator = StrategySimulator(DailyStrategyLauncher(ICNope()), TradeAnalyzer())
+    recorder = OptAnalyzerRecorder(ICTradeAnalyzer())
+    simulator = WeightedSimulator(DailyStrategyLauncher(ICNope()), recorder)
     tickers = [
         "AMZN", "NFLX", "NVDA", "FB", "WMT", "GOOG", "DIS", "HD", "ROKU",
         "AMD", "CRM", "TWTR", "MCD", "GM", "MPC", "SBUX", "BABA"
     ]
     even_dist = 1/len(tickers)
     simulator.positions = {k: even_dist for k in tickers}
-    simulator.run("2018-01-01", "2021-01-05")
+    trade_res = simulator.run("2020-01-01", "2021-01-01")
     results = simulator.results()
 
-    print_out(config, results, simulator.trade_results)
+    print_out(config, results, trade_res)
     print_stats(results, config, simulator.init_bal)
 
 

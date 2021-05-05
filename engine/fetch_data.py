@@ -1,3 +1,4 @@
+from engine.models.options.OptionDoc import OptionDoc
 from metrics.stock import calc_daily_ret, calc_liquidity
 from yahoo import yahoo_fetch
 from pymongo import MongoClient
@@ -14,9 +15,8 @@ def fetch_data(ticker, start_date, end_date, settings_path="config/settings.ini"
     stock_data.insert(len(stock_data.columns), 'Daily Ret', calc_daily_ret(stock_data['Adj Close']))
     stock_data.insert(len(stock_data.columns), 'Liquidity', calc_liquidity(stock_data['Daily Ret'], stock_data['Volume']))
 
-    option_data = fetch_mongo_opt(ticker, start_date, end_date, mongo)
-
-    return stock_data, option_data
+    option_docs = fetch_mongo_opt(ticker, start_date, end_date, mongo)
+    return stock_data, option_docs
 
 
 def fetch_mongo_opt(ticker, start_date, end_date, mongo):
@@ -27,8 +27,8 @@ def fetch_mongo_opt(ticker, start_date, end_date, mongo):
         "ticker": ticker,
         "tradeDate": {"$gte": start_datetime, "$lte": end_datetime}
     })
-    option_data = []
+    opt_docs = []
     for doc in options_cursor:
-        option_data.append(doc)
-    return option_data
+        opt_docs.append(OptionDoc(doc))
+    return opt_docs
 

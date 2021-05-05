@@ -2,6 +2,7 @@
 class Option:
 
     def __init__(self, option_dict):
+        self._option_dict = option_dict
         self.strike = option_dict['strike']
         self.call_vol = option_dict['callVol']
         self.call_open_interest = option_dict['callOpenInterest']
@@ -26,10 +27,20 @@ class Option:
         self.rho = option_dict['rho']
         self.phi = option_dict['phi']
 
+    def __getitem__(self, item):
+        return self._option_dict[item]
+
+    def __str__(self):
+        return f"<Option {self.strike}>"
+
+    def __repr__(self):
+        return self.__str__()
+
 
 class OptionChain:
 
     def __init__(self, option_chain_dict):
+        self._option_chain_dict = option_chain_dict
         self.expire_date = option_chain_dict['expireDate']
         self.options = [Option(opt) for opt in option_chain_dict['options']]
 
@@ -39,3 +50,11 @@ class OptionChain:
     def opt_by_strike(self, strike):
         return next(opt for opt in self.options if opt.strike == strike)
 
+    def __getitem__(self, item):
+        return self._option_chain_dict[item]
+
+    def __str__(self):
+        return f"<OptChain {self.expire_date.strftime('%Y-%m-%d')} {[opt.strike for opt in self.options]}>"
+
+    def __repr__(self):
+        return self.__str__()
