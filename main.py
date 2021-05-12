@@ -1,30 +1,35 @@
 import json
-from datetime import datetime
-from engine.DailyStrategyLauncher import DailyStrategyLauncher
-from engine.analytics.ICTradeAnalyzer import ICTradeAnalyzer
-from engine.analytics.OptAnalyzerRecorder import OptAnalyzerRecorder
-from engine.analytics.metrics import sharpe_ratio, max_drawdown, max_drawdown_dur
-from strategies.ic_nope import ICNope
-from engine.simulators.WeightedSimulator import WeightedSimulator
 from configparser import ConfigParser
+from datetime import datetime
 
-from yahoo import yahoo_fetch
+from launchers import DailyStrategyLauncher
+from analytics.ICTradeAnalyzer import ICTradeAnalyzer
+from analytics.metrics import sharpe_ratio, max_drawdown, max_drawdown_dur
+from data.fetch_data import fetch_data
+from simulators.engine.StrategyPool import StrategyPool
+from simulators import WeightedSimulator
+from strategies.ic_nope import ICNope
 
 
 def main():
     config = ConfigParser()
     config.read("config/settings.ini")
 
-    recorder = OptAnalyzerRecorder(ICTradeAnalyzer())
-    simulator = WeightedSimulator(DailyStrategyLauncher(ICNope()), recorder)
+    engine = StrategyPool(DailyStrategyLauncher(ICNope()), fetch_data, ICTradeAnalyzer())
+    engine.pool_size = 5
+    simulator = WeightedSimulator(engine)
     tickers = [
-        "AMZN", "NFLX", "NVDA", "FB", "WMT", "GOOG", "DIS", "HD", "ROKU",
-        "AMD", "CRM", "TWTR", "MCD", "GM", "MPC", "SBUX", "BABA"
+        "COST", "KO", "MNST", "PM", "WMT", "ORCL", "PYPL", "STX", "SWKS", "TXN", "QCOM", "V", "WDC",
+        "FFIV", "GLW", "HPE", "HPQ", "IBM", "INTC", "JNPR", "MA", "MSFT", "MU", "NTAP", "NVDA",
+        "ACN", "AKAM", "AMAT", "AMD", "CRM", "CSCO", "CTSH", "AMZN", "HD", "MCD", "NKE", "SBUX", "TGT", "GM",
+        "DG", "LVS", "F", "CMG", "EBAY", "YUM", "DHI", "BBY", "EXPE", "CZR", "MGM", "PHM", "WYNN",
+        "MMM", "AAL", "AXP", "AMGN", "BA", "CAT", "CVX", "CSCO", "KO", "DAL", "FDX", "GS", "HD",
+        "INTC", "IBM", "JNJ", "JPM", "KSU", "MCD", "MRK", "MSFT", "NKE", "NSC", "PG", "CRM", "LUV",
+        "UNP", "UAL", "UPS", "UNH", "VZ", "V", "WBA", "DIS"
     ]
     even_dist = 1/len(tickers)
     simulator.positions = {k: even_dist for k in tickers}
-    trade_res = simulator.run("2020-01-01", "2021-01-01")
-    results = simulator.results()
+    trade_res, results = simulator.run("2016-01-01", "2021-01-01")
 
     print_out(config, results, trade_res)
     print_stats(results, config, simulator.init_bal)

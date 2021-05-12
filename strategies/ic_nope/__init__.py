@@ -1,13 +1,13 @@
 import math
 from pandas import pandas as pd
 
-from engine.opt_strats.iron_condor import calc_collateral, calc_premiums, trade_opt_values
+from opt_strats import calc_collateral, calc_premiums, trade_opt_values
 from metrics import nope
 from numpy import isnan
 from statistics import mean
-from engine.utils import mapper
-from engine.opt_strats import iron_condor
-from engine.utils.selectors import select_option_expire
+from opt_utils import mapper
+from opt_strats import iron_condor
+from opt_utils.selectors import select_option_expire
 
 
 class ICNope:
