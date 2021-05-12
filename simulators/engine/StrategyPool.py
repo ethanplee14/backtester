@@ -3,11 +3,11 @@ import multiprocessing as mp
 
 class StrategyPool:
 
-    def __init__(self, strategy_launcher, fetch_data, analyzer):
+    def __init__(self, strategy_launcher, historical_fetcher, analyzer):
         self.strategy_launcher = strategy_launcher
-        self.fetch_data = fetch_data
+        self.historical_fetcher = historical_fetcher
         self.analyzer = analyzer
-        self.pool_size = int(mp.cpu_count()-1)
+        self.pool_size = mp.cpu_count()
         self.logger = mp.get_logger()
 
     def launch(self, tickers, start_date_str, end_date_str):
@@ -28,11 +28,13 @@ class StrategyPool:
         return dict(trade_results)
 
     def _run_strategy(self, tickers, trades_dict, period):
+        self.historical_fetcher.connect()
+
         while len(tickers) > 0:
             start_date_str, end_date_str = period
             ticker = tickers.pop(0)
             print(f"[{mp.current_process().name}] Running: " + ticker)
-            ohlcav, opt_docs = self.fetch_data(ticker, start_date_str, end_date_str)
+            ohlcav, opt_docs = self.historical_fetcher.fetch_data(ticker, start_date_str, end_date_str)
             print(f"[{mp.current_process().name}] Received data for: " + ticker)
             trades = self.strategy_launcher.launch(ohlcav, opt_docs)
             print(f"[{mp.current_process().name}] Completed strategy launch for {ticker}, now analyzing...")

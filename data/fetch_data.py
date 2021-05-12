@@ -27,8 +27,5 @@ def fetch_mongo_opt(ticker, start_date, end_date, mongo):
         "ticker": ticker,
         "tradeDate": {"$gte": start_date, "$lte": end_date}
     })
-    opt_docs = []
-    for doc in options_cursor:
-        opt_docs.append(OptionDoc(doc))
-    return opt_docs
+    return [OptionDoc(doc) for doc in options_cursor]
 

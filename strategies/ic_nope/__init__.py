@@ -1,10 +1,11 @@
 import math
 from pandas import pandas as pd
 
-from opt_strats import calc_collateral, calc_premiums, trade_opt_values
 from metrics import nope
 from numpy import isnan
 from statistics import mean
+
+from opt_strats.iron_condor import calc_collateral, trade_opt_values, calc_premiums
 from opt_utils import mapper
 from opt_strats import iron_condor
 from opt_utils.selectors import select_option_expire
