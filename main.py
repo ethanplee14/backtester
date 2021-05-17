@@ -3,14 +3,11 @@ from configparser import ConfigParser
 from datetime import datetime
 
 from analytics.ICTradeAnalyzer import ICTradeAnalyzer
-from analytics.IterativeTradeAnalyzer import IterativeTradeAnalyzer
-from data.HistoricalFetcher import HistoricalFetcher
 from analytics.metrics import sharpe_ratio, max_drawdown, max_drawdown_dur
-from launchers.DailyIteratorLauncher import DailyIteratorLauncher
+from data.HistoricalFetcher import HistoricalFetcher
 from launchers.StrategyLauncher import StrategyLauncher
 from simulators.WeightedSimulator import WeightedSimulator
 from simulators.engine.StrategyEngine import StrategyEngine
-
 from simulators.processes.StreamedStrategyProcess import StreamedStrategyProcess
 from strategies.ic_nope import ICNope
 
