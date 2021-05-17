@@ -17,6 +17,10 @@ class OptionDoc:
         expire_str = '{dt.month}/{dt.day}/{dt.year}'.format(dt=expire_date)
         return OptionChain(self.option_chain[expire_str])
 
+    def has_chain_expire_in(self, expire_date):
+        expire_str = '{dt.month}/{dt.day}/{dt.year}'.format(dt=expire_date)
+        return expire_str in self.option_chain
+
     def expire_dates(self):
         return [opt['expireDate'] for opt in self.option_chain.values()]
 

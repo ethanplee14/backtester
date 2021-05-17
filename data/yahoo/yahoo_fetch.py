@@ -10,14 +10,14 @@ BASE_URL = "https://query1.finance.yahoo.com/v7/finance/download/"
 
 def daily_ohlcv(symbol, interval="1d", adjusted_close=True, **kwargs):
     """
-    Grabs OHCLV data from yahoo finance. To go back a year specify kwargs to be "years=1". To go back 2 years -
+    Grabs OHCLV market_data from yahoo finance. To go back a year specify kwargs to be "years=1". To go back 2 years -
     "years=2" to go back a month "months = 1" and so on
 
     :param symbol: Stock ticker
     :param interval: days (d), months (m), years (y)
     :param adjusted_close: Whether to include or not
     :param kwargs: how far back you want to go.
-    :return: data frame of the OHCLV
+    :return: market_data frame of the OHCLV
     """
     today = datetime.today().timestamp()
     start_day = datetime.today() - relativedelta(**kwargs)
@@ -32,7 +32,7 @@ def daily_ohclv_period(symbol, from_date, to_date, interval="1d", adjusted_close
     :param to_date: Recent date value to end exclusive. Formatted as 'yyyy-mm-dd'
     :param interval: Default is 1d
     :param adjusted_close: Include adjusted close or not. Default is true
-    :return: data frame of the OHCLV
+    :return: market_data frame of the OHCLV
     """
     from_period = datetime.strptime(from_date, "%Y-%m-%d")
     to_period = datetime.strptime(to_date, "%Y-%m-%d")

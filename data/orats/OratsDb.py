@@ -11,8 +11,11 @@ class OratsDb:
         self.index_name = "ticker_1_tradeDate_1"
 
     def fetch_docs(self, ticker, start_date, end_date):
-        cursor = self.options.find({
+        cursor = self.query_docs(ticker, start_date, end_date)
+        return [OptionDoc(doc) for doc in cursor]
+
+    def query_docs(self, ticker, start_date, end_date):
+        return self.options.find({
             'ticker': ticker,
             'tradeDate': {'$gte': start_date, '$lte': end_date}
         }).hint(self.index_name)
-        return [OptionDoc(doc) for doc in cursor]

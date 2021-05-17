@@ -1,6 +1,10 @@
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pymongo import MongoClient
-from time import time
+from time import time, sleep
+
+from data.HistoricalFetcher import HistoricalFetcher
+from data.yahoo import yahoo_fetch
 
 
 def main():
@@ -14,29 +18,19 @@ def main():
     #     "UNP", "UAL", "UPS", "UNH", "VZ", "V", "WBA", "DIS"
     # ]
     tickers = [
-        "WMT", "ORCL", "PYPL", "STX", "SWKS", "TXN", "QCOM", "V", "COST", "KO", "MNST", "PM", "WDC"
+        "COST", "KO", "MNST", "PM", "WMT", "ORCL", "PYPL", "STX", "SWKS", "TXN", "QCOM", "V", "WDC"
     ]
-    # tickers = [
-    #     "COST", "KO", "MNST", "PM", "WMT", "ORCL", "PYPL", "STX", "SWKS", "TXN", "QCOM", "V", "WDC"
-    # ]
-    mongo = MongoClient()
-    options = mongo.finance.options
 
-    start = time()
-    for ticker in tickers:
-        print("Fetching: " + ticker)
-        options_cursor = options.find({
-            'ticker': ticker,
-            'tradeDate': {
-                "$gte": datetime.strptime("2015-01-01", '%Y-%m-%d'),
-                "$lte": datetime.strptime("2021-01-01", '%Y-%m-%d')
-            }
-        })
-        # fetch_data(ticker, "2015-01-01", "2021-01-01")
-        data = list(options_cursor)
-        print("Fetch completed: " + ticker)
+    hist_fetcher = HistoricalFetcher("localhost", 27017)
+    hist_fetcher.connect()
+    # producer = CursorProducer(hist_fetcher, ThreadPoolExecutor(max_workers=4))
+    # producer.tickers = tickers
+    # producer.start("2021-01-01", "2021-03-01")
 
-    print("Time took: " + str(time() - start))
+    while True:
+        # print(len(producer.cursors))
+        print("test")
+        sleep(.1)
 
 
 if __name__ == '__main__':

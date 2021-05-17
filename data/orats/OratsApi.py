@@ -10,7 +10,7 @@ class OratsApi:
 
     def fetch(self, endpoint, **kwargs):
         """
-        Fetches data from orats rest api
+        Fetches market_data from orats rest api
         :param endpoint: API endpoint formatted as "path/to/endpoint"
         :param kwargs: Arguments for querystring of endpoint
         :return: api get response
@@ -22,4 +22,4 @@ class OratsApi:
         })
         if response.status_code != 200:
             raise requests.HTTPError(response.text)
-        return response.json()['data']
+        return response.json()['market_data']

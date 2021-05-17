@@ -13,7 +13,7 @@ class WeightedSimulator:
 
     def run(self, start_date, end_date):
         """
-        Runs a strategy_launcher simulation on percent weight based portfolio
+        Runs a strat_launcher simulation on percent weight based portfolio
         :param start_date: start date string format as 'YYYY-MM-DD'
         :param end_date: end date string format as 'YYYY-MM-DD'
         :return:

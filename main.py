@@ -2,12 +2,16 @@ import json
 from configparser import ConfigParser
 from datetime import datetime
 
-from data.HistoricalFetcher import HistoricalFetcher
 from analytics.ICTradeAnalyzer import ICTradeAnalyzer
+from analytics.IterativeTradeAnalyzer import IterativeTradeAnalyzer
+from data.HistoricalFetcher import HistoricalFetcher
 from analytics.metrics import sharpe_ratio, max_drawdown, max_drawdown_dur
-from launchers.DailyStrategyLauncher import DailyStrategyLauncher
+from launchers.DailyIteratorLauncher import DailyIteratorLauncher
+from launchers.StrategyLauncher import StrategyLauncher
 from simulators.WeightedSimulator import WeightedSimulator
-from simulators.engine.StrategyPool import StrategyPool
+from simulators.engine.StrategyEngine import StrategyEngine
+
+from simulators.processes.StreamedStrategyProcess import StreamedStrategyProcess
 from strategies.ic_nope import ICNope
 
 
@@ -15,10 +19,10 @@ def main():
     config = ConfigParser()
     config.read("config/settings.ini")
 
-    historical_fetcher = HistoricalFetcher(config)
-    launcher = DailyStrategyLauncher(ICNope())
-    engine = StrategyPool(launcher, historical_fetcher, ICTradeAnalyzer())
-    engine.pool_size = 5
+    historical_fetcher = HistoricalFetcher.from_config(config)
+    launcher = StrategyLauncher(ICNope())
+    engine = StrategyEngine(StreamedStrategyProcess(historical_fetcher, launcher, ICTradeAnalyzer()))
+    engine.pool_size = 15
     simulator = WeightedSimulator(engine)
     tickers = [
         "COST", "KO", "MNST", "PM", "WMT", "ORCL", "PYPL", "STX", "SWKS", "TXN", "QCOM", "V", "WDC",

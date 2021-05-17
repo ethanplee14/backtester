@@ -1,6 +1,7 @@
 import math
 from pandas import pandas as pd
 
+from data.yahoo.utils import end_of_week_opt
 from metrics import nope
 from numpy import isnan
 from statistics import mean
@@ -19,7 +20,7 @@ class ICNope:
         self.maximum_premium = maximum_premium
         self._daily_option_impact = []
 
-    def run(self, _, daily_stock_data, daily_option_data, eow):
+    def run(self, _, daily_stock_data, daily_option_data):
         """
         :param _: Date of execution
         :param daily_option_data: Dictionary {High, Low, Close, Adj Close, Volume}
@@ -32,6 +33,7 @@ class ICNope:
         if isnan(daily_stock_data['Daily Ret']) or isnan(daily_stock_data['Liquidity']):
             return None
 
+        eow = end_of_week_opt(daily_option_data)
         if eow and len(self._daily_option_impact) >= 5:
             option_impact = mean(self._daily_option_impact[-5:])
             opt_chain = select_option_expire(daily_option_data['tradeDate'], daily_option_data["optionChain"], weeks=1)

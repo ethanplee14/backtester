@@ -1,6 +1,10 @@
 from datetime import datetime, timedelta
 
 
+def end_of_week_opt(opt_doc):
+    return opt_doc.has_chain_expire_in(opt_doc.trade_date)
+
+
 def end_of_week(dates, date):
     """
     Check if end of week based on yahoo _ohlcv
