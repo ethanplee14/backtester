@@ -27,7 +27,6 @@ class ICNope:
         :param daily_stock_data: Dictionary {price, tradeDate, optionChain: {expireDate, greeks, cVal, pVal}}
         :param eow: Is end of week
         :type _: date
-        :type eow: bool
         :return: trades made
         """
         if isnan(daily_stock_data['Daily Ret']) or isnan(daily_stock_data['Liquidity']):

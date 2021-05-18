@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 
+# This should not be in yahoo utils
 def end_of_week_opt(opt_doc):
     return opt_doc.has_chain_expire_in(opt_doc.trade_date)
 
