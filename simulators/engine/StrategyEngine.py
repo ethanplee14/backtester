@@ -1,3 +1,4 @@
+import logging
 import multiprocessing as mp
 
 
@@ -6,7 +7,7 @@ class StrategyEngine:
     def __init__(self, process):
         self.process = process
         self.pool_size = mp.cpu_count()
-        self.logger = mp.get_logger()
+        self.logger = mp.log_to_stderr(logging.INFO)
 
     def launch(self, tickers, start_date_str, end_date_str):
         manager = mp.Manager()
@@ -14,7 +15,7 @@ class StrategyEngine:
         trade_results = manager.dict()
         period = (start_date_str, end_date_str)
 
-        print("Launching pool size: " + str(self.pool_size))
+        self.logger.info(f"Launching pool of <{self.pool_size}> processes.")
         with mp.Pool(self.pool_size) as pool:
             res = []
             for i in range(self.pool_size):

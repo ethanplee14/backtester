@@ -7,4 +7,5 @@ BackTester for options using orats data
 - [X] Implement multithreaded pool to submit tasks to request mongodb data and then queue the data for analysis.
 - [ ] Refactor IronCondor trade to be its own model that holds the Options in its legs.
 - [X] Develop Simulator Engine for running strategies while streaming mongodb data, rather than storing.
+- [X] Implement Logging for strategy pool to flexibly manage output
 - [ ] Create Analyzer Module to string various analysis together. 

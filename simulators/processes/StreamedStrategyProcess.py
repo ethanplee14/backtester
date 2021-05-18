@@ -10,6 +10,7 @@ class StreamedStrategyProcess:
         self.hist_fetcher = hist_fetcher
         self.strat_launcher = strategy_launcher
         self.analyzer = analyzer
+        self.logger = mp.get_logger()
         self._opened_trade = None
 
     def run(self, tickers, period, trade_results):
@@ -18,10 +19,10 @@ class StreamedStrategyProcess:
         while len(tickers) > 0:
             start_date_str, end_date_str = period
             ticker = tickers.pop()
-            print(f"{mp.current_process().name}: Launching: {ticker}")
+            self.logger.info(f"Launching: {ticker}")
             ohlcav, cursor = self.hist_fetcher.fetch_cursor(ticker, start_date_str, end_date_str)
             trade_results[ticker] = self._launch_strategy(ohlcav, cursor)
-            print(f"{mp.current_process().name}: Completed: {ticker}")
+            self.logger.info(f"Completed Analyzing: {ticker}")
             self._opened_trade = None
             self.strat_launcher.reset()
 
