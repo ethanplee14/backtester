@@ -1,5 +1,5 @@
 
-class LinearStrategy:
+class LinearEngine:
 
     def __init__(self, strategy_launcher, fetch_data, analyzer):
         self.strategy_launcher = strategy_launcher

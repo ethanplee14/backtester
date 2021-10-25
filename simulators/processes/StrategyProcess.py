@@ -11,9 +11,8 @@ class StrategyProcess:
     def run(self, tickers, period, trades_dict):
         self.hist_fetcher.connect()
 
-        while len(tickers) > 0:
+        for ticker in tickers:
             start_date_str, end_date_str = period
-            ticker = tickers.pop(0)
             print(f"[{mp.current_process().name}] Running: " + ticker)
             ohlcav, opt_docs = self.hist_fetcher.fetch_data(ticker, start_date_str, end_date_str)
             print(f"[{mp.current_process().name}] Received data for: " + ticker)

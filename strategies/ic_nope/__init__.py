@@ -23,8 +23,8 @@ class ICNope:
     def run(self, _, daily_stock_data, daily_option_data):
         """
         :param _: Date of execution
-        :param daily_option_data: Dictionary {High, Low, Close, Adj Close, Volume}
         :param daily_stock_data: Dictionary {price, tradeDate, optionChain: {expireDate, greeks, cVal, pVal}}
+        :param daily_option_data: Dictionary {High, Low, Close, Adj Close, Volume}
         :param eow: Is end of week
         :type _: date
         :return: trades made
