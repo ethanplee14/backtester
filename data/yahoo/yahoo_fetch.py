@@ -46,7 +46,8 @@ def _fetch(symbol, period1, period2, interval, adjusted_close):
         "interval": interval,
         "adjusted_close": adjusted_close
     }
-    csv_res = requests.get(BASE_URL+symbol, qs)
+    csv_res = requests.get(BASE_URL+symbol, qs, headers={"User-Agent": "pyagent"})
+
     if csv_res.status_code != 200:
         raise requests.HTTPError(csv_res.text)
     return pd.read_csv(StringIO(csv_res.text), index_col=0)

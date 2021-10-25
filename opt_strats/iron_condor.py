@@ -28,15 +28,15 @@ def calc_strikes(stock_price, threshold, strikes):
     return pb, ps, cs, cb
 
 
-def calc_premiums(ic_options, digits=4):
-    put_premium = ic_options['ps'] - ic_options['pb']
-    call_premium = ic_options['cs'] - ic_options['cb']
+def calc_premiums(ic_opt_vals, digits=4):
+    put_premium = ic_opt_vals['ps'] - ic_opt_vals['pb']
+    call_premium = ic_opt_vals['cs'] - ic_opt_vals['cb']
     return round(put_premium + call_premium, digits) * 100
 
 
-def calc_collateral(ic_options, digits=4):
-    put_collateral = (ic_options['ps'] - ic_options['pb'])
-    call_collateral = (ic_options['cb'] - ic_options['cs'])
+def calc_collateral(ic_strikes, digits=4):
+    put_collateral = (ic_strikes['ps'] - ic_strikes['pb'])
+    call_collateral = (ic_strikes['cb'] - ic_strikes['cs'])
     return round(max(put_collateral, call_collateral), digits) * 100
 
 
