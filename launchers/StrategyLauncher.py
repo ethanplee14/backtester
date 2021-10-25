@@ -7,6 +7,12 @@ class StrategyLauncher:
         self.strategy = strategy
 
     def launch(self, daily_stock_ohlcav, daily_opt_doc):
+        """
+        Launches strategy with passed in daily stock ohlcav and opt document
+        :param daily_stock_ohlcav: Dataframe of daily stock ohlcav
+        :param daily_opt_doc: Option Doc
+        :return: trade results of strategy
+        """
         stock_date, _ = verify_dates_match(daily_stock_ohlcav, daily_opt_doc)
         return self._run_strategy(stock_date, daily_stock_ohlcav, daily_opt_doc)
 
