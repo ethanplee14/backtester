@@ -1,4 +1,4 @@
-## Overview
+### Overview
 Algorithmic strategy back tester using daily Open, High, Low, Close, Adjusted, Volume (ohlcav) options supplied 
 and formatted from ORATS and daily ohlcav stock data.  
 
@@ -7,7 +7,9 @@ Data: A module with a fetch_data method. Implementation is **data/HistoricalFetc
 **orats/OratsDb** for a MongoDB and stock data from daily_ohlcv_period method in the **data/yahoo/yahoo_fetch** to get 
 stock ohclv.
 
-Strategy: Runs a strategy to see if it should make a trade with the given passed in data. Only strategy developed so far is located at **strategies/ic_nope/__init__**. The ICNope strategy takes a weekly NOPE calculation which is the ratio of the summation of all option delta over volume. If Nope is high, place an IronCondor option trade.
+Strategy: Runs a strategy to see if it should make a trade with the given passed in data. Only strategy developed so 
+far is located at **strategies/ic_nope/__init__**. The ICNope strategy takes a weekly NOPE calculation which is the 
+ratio of the summation of all option delta over volume. If Nope is high, place an IronCondor option trade.
 
 Strategy Launcher: Verifies and normalizes passed in daily fetched data, then launches the strategy.
 
