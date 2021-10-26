@@ -7,22 +7,22 @@ Data: A module with a fetch_data method. Implementation is **data/HistoricalFetc
 **orats/OratsDb** for a MongoDB and stock data from daily_ohlcv_period method in the **data/yahoo/yahoo_fetch** to get 
 stock ohclv.
 
-Strategy: Runs a strategy to see if it should make a trade with the given passed in data. Only strategy developed so 
+Strategy - Runs a strategy to see if it should make a trade with the given passed in data. Only strategy developed so 
 far is located at **strategies/ic_nope/__init__**. The ICNope strategy takes a weekly NOPE calculation which is the 
 ratio of the summation of all option delta over volume. If Nope is high, place an IronCondor option trade.
 
-Strategy Launcher: Verifies and normalizes passed in daily fetched data, then launches the strategy.
+Strategy Launcher - Verifies and normalizes passed in daily fetched data, then launches the strategy.
 
-TradeAnalyzer: Module to make final analysis and calculations to the trade. For the ICNope strategy, 
+TradeAnalyze - Module to make final analysis and calculations to the trade. For the ICNope strategy, 
 **analytics/ICTradeAnalyzer** calculates premiums and profits made from the strategy.  
 
-EngineProcess: Processes a back test by tying together the Data, StrategyLauncher, and Analyzer. Originally used 
+EngineProcess - Processes a back test by tying together the Data, StrategyLauncher, and Analyzer. Originally used 
 **simulators/processes/StrategyProcess** which fetches the entire dataset before running the strategy. This created a 
 lot of space complexity as OptionDocs are large and running it over the course of a few years with multiple tickers is 
 too intensive. In order to fix this, implemented a **simulators/process/StreamedStrategyProcess** to stream data from the 
 database that way we don't need to hold onto un-necessary data. 
 
-StrategyEngine: Runs the EngineProcess. Originally implemented a **simulator/engine/LinearEngine** which completely 
+StrategyEngine - Runs the EngineProcess. Originally implemented a **simulator/engine/LinearEngine** which completely 
 eliminates the needs for an EngineProcess as it runs each ticker's back test one at a time. Iteratively processing 
 each ticker's back test created a lot of time complexity. Network requests and iteratively processing each day's data 
 and trade is slow. To fix this, I implemented a **simulator/engine/StrategyEngine** which utilizes multiprocessing. 
@@ -30,7 +30,7 @@ Python's multithreading doesn't allow for continuous computational analysis due 
 for concurrency while multiprocessing is used for parallelism and information doesn't need to be shared between 
 processes, multiprocessing was a good fit for the new engine. 
 
-Simulator: Simulates a portfolio with a balance and held positions. Runs the passed in engine and updates the portfolio
+Simulator - Simulates a portfolio with a balance and held positions. Runs the passed in engine and updates the portfolio
 based on the engine's trade results. **simulator/WeightedSimulator** implements a weighted portfolio simulation where
 you can pre-define a ticker's weight in a portfolio. In the **./main** file currently using equal distribution.
 
